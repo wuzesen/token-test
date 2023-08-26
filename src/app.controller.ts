@@ -19,7 +19,7 @@ const users = [
 ];
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Inject(JwtService)
   private jwtService: JwtService;
@@ -30,8 +30,10 @@ export class AppController {
   }
 
   @Post('login')
-  login(@Body() userDto: UserDto) {
+  login(@Body() userDto: UserDto, @Req() req: Request) {
     const user = users.find((item) => item.username === userDto.username);
+    console.log(req)
+    req.headers['cookies'] = 'a=b'
 
     if (!user) {
       throw new BadRequestException('用户不存在');
@@ -43,11 +45,11 @@ export class AppController {
     const accessToken = this.jwtService.sign(
       {
         username: user.username,
-        email: user.email,
+        email: user.email
       },
       {
         expiresIn: '0.5h',
-      },
+      }
     );
 
     const refreshToken = this.jwtService.sign(
@@ -62,10 +64,10 @@ export class AppController {
     return {
       userInfo: {
         username: user.username,
-        email: user.email,
+        email: user.email
       },
       accessToken,
-      refreshToken,
+      refreshToken
     };
   }
 
@@ -78,7 +80,7 @@ export class AppController {
     }
 
     try {
-      const token = auth.split(' ')[1];
+      const token = auth;
       const data = this.jwtService.verify(token);
 
       console.log(data);
@@ -120,5 +122,12 @@ export class AppController {
     } catch (e) {
       throw new UnauthorizedException('token失效, 请重新登录');
     }
+  }
+
+  @Post('loginOut')
+  loginOut(@Body() token: {accessToken: string; refreshToken: string}) {
+    this.jwtService.decode(token.accessToken)
+    this.jwtService.decode(token.refreshToken)
+    return '退出成功'
   }
 }

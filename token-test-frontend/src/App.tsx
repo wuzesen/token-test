@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { User, userLogin, aaa } from "./interface";
+import { User, userLogin, aaa, userLoginOut } from "./interface";
 
 
 
@@ -18,8 +18,8 @@ function App() {
     localStorage.setItem('refresh_token', data.refreshToken)
   }, [userName, password])
 
-  const loginOut = () => {
-
+  const loginOut = async () => {
+    await userLoginOut()
   }
 
   const onUserName = (e: any) => {

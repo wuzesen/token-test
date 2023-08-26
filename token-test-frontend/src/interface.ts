@@ -9,7 +9,7 @@ axiosInstance.interceptors.request.use(function(config) {
     const accessToken = localStorage.getItem('access_token');
 
     if (accessToken) {
-        config.headers.authorization = 'a ' + accessToken
+        config.headers.authorization = accessToken
     }
     return config
 })
@@ -81,4 +81,10 @@ export async function aaa() {
         axiosInstance.get('/aaa')
     ]
     return res
+}
+
+export async function userLoginOut() {
+    const accessToken = localStorage.getItem('access_token')
+    const refreshToken = localStorage.getItem('refresh_token')
+    await axiosInstance.post('loginOut', {accessToken, refreshToken})
 }

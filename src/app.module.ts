@@ -6,8 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'zesen'
-    })
+      secret: 'zesen',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
