@@ -19,7 +19,7 @@ const users = [
 ];
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @Inject(JwtService)
   private jwtService: JwtService;
@@ -40,18 +40,24 @@ export class AppController {
       throw new BadRequestException('密码错误');
     }
 
-    const accessToken = this.jwtService.sign({
-      username: user.username,
-      email: user.email
-    }, {
-      expiresIn: '0.5h'
-    })
+    const accessToken = this.jwtService.sign(
+      {
+        username: user.username,
+        email: user.email,
+      },
+      {
+        expiresIn: '0.5h',
+      },
+    );
 
-    const refreshToken = this.jwtService.sign({
-      username: user.username
-    }, {
-      expiresIn: '7d'
-    })
+    const refreshToken = this.jwtService.sign(
+      {
+        username: user.username,
+      },
+      {
+        expiresIn: '7d',
+      },
+    );
 
     return {
       userInfo: {
@@ -59,7 +65,7 @@ export class AppController {
         email: user.email,
       },
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
@@ -84,29 +90,35 @@ export class AppController {
   @Get('refresh')
   refresh(@Query('token') token: string) {
     try {
-      const data = this.jwtService.verify(token)
+      const data = this.jwtService.verify(token);
 
-      const user = users.find(item => item.username === data.username)
+      const user = users.find((item) => item.username === data.username);
 
-      const accessToken = this.jwtService.sign({
-        username: user.username,
-        email: user.email
-      }, {
-        expiresIn: '0.5h'
-      })
+      const accessToken = this.jwtService.sign(
+        {
+          username: user.username,
+          email: user.email,
+        },
+        {
+          expiresIn: '0.5h',
+        },
+      );
 
-      const refreshToken = this.jwtService.sign({
-        username: user.username
-      }, {
-        expiresIn: '7d'
-      })
+      const refreshToken = this.jwtService.sign(
+        {
+          username: user.username,
+        },
+        {
+          expiresIn: '7d',
+        },
+      );
 
       return {
         accessToken,
-        refreshToken
-      }
-    } catch(e) {
-      throw new UnauthorizedException('token失效, 请重新登录')
+        refreshToken,
+      };
+    } catch (e) {
+      throw new UnauthorizedException('token失效, 请重新登录');
     }
   }
 }
